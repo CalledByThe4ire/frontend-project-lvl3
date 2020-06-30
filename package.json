@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "test": "jest --colors"
+    "test": "jest --colors",
+    "start": "cross-env NODE_ENV=development npx babel-node ./scripts/webpack/start.js",
+    "build": "cross-env NODE_ENV=production npx babel-node ./scripts/webpack/build.js"
   },
   "repository": {
     "type": "git",
@@ -16,24 +18,50 @@
     "verbose": true,
     "testURL": "http://localhost/"
   },
-  "dependencies": {},
+  "dependencies": {
+    "app-root-path": "^3.0.0",
+    "autoprefixer": "^9.8.4",
+    "bootstrap": "^4.5.0",
+    "chalk": "^4.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "cross-env": "^7.0.2",
+    "html-webpack-plugin": "^4.3.0",
+    "jquery": "^3.5.1",
+    "lodash": "^4.17.15",
+    "lodash-webpack-plugin": "^0.11.5",
+    "mini-css-extract-plugin": "^0.9.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "popper.js": "^1.16.1",
+    "react-dev-utils": "^10.2.1",
+    "terser-webpack-plugin": "^3.0.6",
+    "webpack": "^4.43.0",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-dev-server-waitpage": "^1.0.0",
+    "webpack-hot-middleware": "^2.25.0",
+    "webpack-merge": "^4.2.2"
+  },
   "devDependencies": {
     "@babel/core": "^7.10.3",
+    "@babel/node": "^7.10.3",
     "@babel/preset-env": "^7.10.3",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.1.0",
     "babel-loader": "^8.1.0",
+    "css-loader": "^3.6.0",
     "debug": "^4.1.1",
     "eslint": "^7.3.1",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-jest": "^23.17.1",
-    "html-webpack-plugin": "^4.3.0",
+    "file-loader": "^6.0.0",
     "jest": "^26.1.0",
     "jest-cli": "^26.1.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "node-sass": "^4.14.1",
+    "postcss-loader": "^3.0.0",
+    "prettier": "^2.0.5",
+    "sass-loader": "^8.0.2",
+    "style-loader": "^1.2.1",
+    "url-loader": "^4.1.0"
   }
 }
