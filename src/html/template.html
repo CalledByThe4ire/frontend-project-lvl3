@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html class="w-100 h-100">
+  <head> </head>
+  <body class="page d-flex flex-column w-100 h-100">
+    <main class="main-content d-flex flex-column w-100 h-100">
+      <div class="container mt-5">
+        <div class="jumbotron mb-0">
+          <h1 class="display-4">RSS Reader</h1>
+          <p class="lead">
+            Start reading RSS today! It&nbsp;is&nbsp;easy,
+            it&nbsp;is&nbsp;nicely.
+          </p>
+          <hr class="my-4" />
+          <form>
+            <div class="form-group mb-0">
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="rss link"
+                  name="link"
+                />
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="submit">
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="row">
+          <div class="col rss-feeds"></div>
+          <div class="col rss-posts"></div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

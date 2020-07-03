@@ -1,4 +1,4 @@
-import init from '../src/init';
+import init from '../src/js/init';
 
 test('init', () => {
   init();

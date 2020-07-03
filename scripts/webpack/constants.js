@@ -8,8 +8,8 @@ export const PORT = 3000;
 
 // Paths
 export { PROJECT_ROOT };
-export const SOURCE = resolve(PROJECT_ROOT, './src');
-export const DIST = resolve(PROJECT_ROOT, './dist');
+export const SOURCE = resolve(PROJECT_ROOT, './src/');
+export const DIST = resolve(PROJECT_ROOT, './dist/');
 
 // Formatting
 export const CHUNK_NAME_JS = '[name].[chunkhash].[id].js';

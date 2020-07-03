@@ -17,7 +17,7 @@ export default () => {
 
   return {
     mode: 'none',
-    entry: SOURCE,
+    entry: `${SOURCE}/js`,
     output: {
       path: DIST,
       filename: IS_DEVELOPMENT ? '[name].js' : `js/${CHUNK_NAME_JS}`,
@@ -60,7 +60,8 @@ export default () => {
       new HtmlWebpackPlugin({
         filename: 'index.html',
         title: 'RSS Aggregator',
-        template: `${SOURCE}/template.html`,
+        template: `${SOURCE}/html/template.html`,
+        favicon: `${SOURCE}/misc/favicon.ico`,
       }),
       new LodashModuleReplacementPlugin(),
       new CleanWebpackPlugin(),
