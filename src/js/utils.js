@@ -1,5 +1,5 @@
-import * as yup from 'yup';
+/* eslint-disable implicit-arrow-linebreak, import/prefer-default-export */
 
-const schema = yup.string().url();
-export const isURLValid = (url) => schema.isValid(url);
-export const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+
+export { corsProxy };

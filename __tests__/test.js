@@ -1,6 +1,3 @@
-import init from '../src/js/init';
-
-test('init', () => {
-  init();
+test('test', () => {
   expect(true).toBeTruthy();
 });

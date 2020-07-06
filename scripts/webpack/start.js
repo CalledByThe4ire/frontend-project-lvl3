@@ -10,6 +10,7 @@ import generateDevConfig from './config/webpack.dev';
 
 (async () => {
   const config = await generateDevConfig();
+
   const {
     devServer: { host, port },
   } = config;
