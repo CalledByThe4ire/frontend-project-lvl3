@@ -79,8 +79,6 @@ const formErrorsHandler = (form, error) => {
 };
 
 const feedsHandler = (feedsContainer, value) => {
-  console.log(value);
-
   const container = feedsContainer;
 
   const { feeds, posts } = value;

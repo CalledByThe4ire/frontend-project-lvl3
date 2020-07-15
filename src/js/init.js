@@ -31,7 +31,7 @@ export default () => {
 
   const watchedState = onChange(state, (path, value) => actions(path, value));
 
-  const delay = 1000 * 60;
+  const delay = 5000;
 
   setTimeout(function request() {
     subscribe(watchedState);
@@ -80,7 +80,7 @@ export default () => {
       updateValidationState(watchedState);
     });
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const formData = new FormData(e.target);
