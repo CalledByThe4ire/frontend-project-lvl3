@@ -8,9 +8,7 @@ import waitpage from 'webpack-dev-server-waitpage';
 // Config
 import generateDevConfig from './config/webpack.dev';
 
-(async () => {
-  const config = await generateDevConfig();
-
+generateDevConfig().then((config) => {
   const {
     devServer: { host, port },
   } = config;
@@ -44,4 +42,4 @@ import generateDevConfig from './config/webpack.dev';
   devServer.listen(port, host, () => {
     openBrowser(`http://${host}:${port}`);
   });
-})();
+});
