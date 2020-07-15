@@ -6,6 +6,7 @@ import onChange from 'on-change';
 import actions from './actions';
 import queries, { subscribe } from './queries';
 import { corsProxy } from './utils';
+import './i18n';
 
 export default () => {
   const state = {
