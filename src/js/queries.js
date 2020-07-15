@@ -14,8 +14,6 @@ const map = (data) => {
 
   const { textContent: description } = feed.querySelector('description');
 
-  const id = uuidv4();
-
   const feedPosts = parsedXML.querySelectorAll('item');
 
   const posts = Array.from(feedPosts).map((feedPost) => {
@@ -26,53 +24,59 @@ const map = (data) => {
     return {
       title: feedPostTitle,
       href: feedPostLink,
-      feedId: id,
     };
   });
 
   return {
-    id,
     title,
     description,
     posts,
   };
 };
 
+const addId = (feed, id = uuidv4()) => ({
+  ...feed,
+  id,
+  posts: feed.posts.map((post) => {
+    post.feedId = id;
+
+    return post;
+  }),
+});
+
 export const subscribe = (state) => {
-  const { feeds } = state.rss;
+  const {
+    rss: { feeds },
+  } = state;
 
   if (feeds.length !== 0) {
     feeds.forEach((feed) => {
-      const { id, url } = feed;
+      const { id: feedId, url: feedUrl } = feed;
 
       axios
-        .get(url)
+        .get(feedUrl)
         .then(({ data }) => {
           try {
-            const posts = state.rss.posts
-              .filter((post) => post.feedId === id)
-              .map(({ title, href }) => ({ title, href }));
-
-            const newPosts = _.pick(map(data), ['posts']).posts.map(
-              ({ title, href }) => ({
-                title,
-                href,
-              }),
+            const oldPosts = state.rss.posts.filter(
+              (post) => post.feedId === feedId,
             );
 
-            const postsDiff = _.differenceWith(newPosts, posts, _.isEqual);
+            const parsedFeed = data |> map;
+
+            const { posts } = _.pick(parsedFeed, ['posts']);
+
+            const newPosts = posts.map((post) => {
+              post.feedId = feedId;
+
+              return post;
+            });
+
+            const postsDiff = _.differenceWith(newPosts, oldPosts, _.isEqual);
 
             if (postsDiff.length !== 0) {
               state.rss = {
                 ...state.rss,
-                posts: [
-                  ...postsDiff.map(({ title, href }) => ({
-                    title,
-                    href,
-                    feedId: id,
-                  })),
-                  ...state.rss.posts,
-                ],
+                posts: [...postsDiff, ...state.rss.posts],
               };
             }
           } catch (err) {
@@ -92,7 +96,7 @@ export default (url, state) => {
     .get(url)
     .then(({ data }) => {
       try {
-        const feed = data |> map;
+        const feed = data |> map |> addId;
 
         if (feed) {
           const {

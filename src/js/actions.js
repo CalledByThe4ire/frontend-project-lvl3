@@ -78,13 +78,11 @@ const formErrorsHandler = (form, error) => {
   }
 };
 
-const feedsHandler = (feedsContainer, value) => {
-  const container = feedsContainer;
-
-  const { feeds, posts } = value;
+const feedsHandler = (container, { feeds, posts }) => {
+  const feedsContainer = container;
 
   if (feeds.length !== 0) {
-    container.innerHTML = '';
+    feedsContainer.innerHTML = '';
 
     feeds.forEach((feed) => {
       const {
@@ -93,17 +91,17 @@ const feedsHandler = (feedsContainer, value) => {
         id: feedId,
       } = feed;
 
-      const feedPosts = posts.filter((post) => post.feedId === feedId);
+      const filteredPosts = posts.filter((post) => post.feedId === feedId);
 
-      const mappedPosts = feedPosts.length !== 0
-        && feedPosts.map(({ title: postTitle, href: postHref }) => {
-          const anchor = document.createElement('a');
+      const mappedPosts = filteredPosts.length !== 0
+        && filteredPosts.map(({ title: postTitle, href: postHref }) => {
+          const postLink = document.createElement('a');
 
-          anchor.className = 'list-group-item list-group-item-action posts__item';
-          anchor.href = postHref;
-          anchor.textContent = postTitle;
+          postLink.className = 'list-group-item list-group-item-action posts__item';
+          postLink.href = postHref;
+          postLink.textContent = postTitle;
 
-          return anchor;
+          return postLink;
         });
 
       let postsContainer = null;
@@ -130,7 +128,7 @@ const feedsHandler = (feedsContainer, value) => {
         card.append(postsContainer);
       }
 
-      container.append(card);
+      feedsContainer.append(card);
     });
   }
 };
