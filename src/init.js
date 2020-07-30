@@ -68,9 +68,9 @@ export default () => {
 
   const rssReaderForm = document.querySelector('.rss-reader-form');
 
-  const rssReaderInput = rssReaderForm.querySelector('.rss-reader-form__input');
+  const { rss: rssReaderFormInput } = rssReaderForm.elements;
 
-  rssReaderInput.addEventListener('input', (e) => {
+  rssReaderFormInput.addEventListener('input', (e) => {
     watchedState.form.input = e.target.value;
     updateValidationState(watchedState);
   });
@@ -80,7 +80,7 @@ export default () => {
 
     const formData = new FormData(e.target);
 
-    const url = formData.get(rssReaderInput.name);
+    const url = formData.get(rssReaderFormInput.name);
 
     watchedState.form.process.state = 'sending';
 

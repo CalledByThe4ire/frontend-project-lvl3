@@ -1,7 +1,9 @@
 /* eslint-disable implicit-arrow-linebreak  */
 
 const formProcessStateHandler = (form, value) => {
-  const { rss, submit } = form.elements;
+  const { rss: rssInput } = form.elements;
+
+  const submit = form.querySelector('button[type="submit"]');
 
   switch (value) {
     case 'failed':
@@ -15,12 +17,12 @@ const formProcessStateHandler = (form, value) => {
     case 'sending':
       submit.disabled = true;
       submit.className = 'btn btn-outline-secondary';
-      rss.className = 'form-control';
+      rssInput.className = 'form-control';
       break;
 
     case 'finished':
       submit.disabled = false;
-      rss.value = '';
+      rssInput.value = '';
       break;
 
     default:
@@ -29,7 +31,7 @@ const formProcessStateHandler = (form, value) => {
 };
 
 const formValidityHandler = (form, value) => {
-  const { submit } = form.elements;
+  const submit = form.querySelector('button[type="submit"]');
 
   submit.disabled = !value;
 
@@ -43,15 +45,15 @@ const formValidityHandler = (form, value) => {
 };
 
 const formErrorsHandler = (form, error) => {
-  const { rss } = form.elements;
+  const { rss: rssInput } = form.elements;
 
-  const rssContainer = rss.parentElement;
+  const rssContainer = rssInput.parentElement;
 
   const errorElement = rssContainer.nextElementSibling;
 
   if (errorElement) {
-    rss.classList.remove('is-invalid');
-    rss.classList.add('is-valid');
+    rssInput.classList.remove('is-invalid');
+    rssInput.classList.add('is-valid');
     rssContainer.classList.remove('is-invalid');
     rssContainer.classList.add('is-valid');
     errorElement.remove();
@@ -62,8 +64,8 @@ const formErrorsHandler = (form, error) => {
 
     feedbackElement.classList.add('invalid-feedback');
     feedbackElement.innerHTML = error;
-    rss.classList.remove('is-valid');
-    rss.classList.add('is-invalid');
+    rssInput.classList.remove('is-valid');
+    rssInput.classList.add('is-invalid');
     rssContainer.classList.remove('is-valid');
     rssContainer.classList.add('is-invalid');
     rssContainer.after(feedbackElement);
@@ -127,25 +129,27 @@ const feedsHandler = (container, { feeds, posts }) => {
 
 export default (path, value) => {
   try {
-    const [name] = path.split('.');
-
-    const element = document.querySelector(`[data-state=${name}]`);
+    let element = null;
 
     switch (path) {
       case 'form.process.state':
+        element = document.querySelector('.rss-reader-form');
         formProcessStateHandler(element, value);
         break;
 
       case 'form.process.error':
       case 'form.validity.error':
+        element = document.querySelector('.rss-reader-form');
         formErrorsHandler(element, value);
         break;
 
       case 'form.validity.valid':
+        element = document.querySelector('.rss-reader-form');
         formValidityHandler(element, value);
         break;
 
       case 'rss':
+        element = document.querySelector('.rss-reader-feeds');
         feedsHandler(element, value);
         break;
 
