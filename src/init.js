@@ -4,7 +4,7 @@ import _ from 'lodash';
 import * as yup from 'yup';
 import onChange from 'on-change';
 import actions from './actions';
-import queries, { subscribe } from './queries';
+import query, { subscribe } from './query';
 import corsProxy from './utils/cors-proxy';
 import './i18n';
 
@@ -17,11 +17,9 @@ export default () => {
       },
       validity: {
         valid: true,
-        errors: {},
+        error: '',
       },
-      fields: {
-        rss: '',
-      },
+      input: '',
     },
     rss: {
       feeds: [],
@@ -38,60 +36,54 @@ export default () => {
     setTimeout(request, delay);
   }, delay);
 
-  const schema = yup.object().shape({
-    rss: yup
-      .string()
-      .required()
-      .url()
-      .test(
-        'isUnique',
-        'rss already exists!',
-        (value) =>
-          !watchedState.rss.feeds
-            .map((feed) => feed.url)
-            .includes(`${corsProxy}${value}`),
-      ),
-  });
+  const schema = yup
+    .string()
+    .required()
+    .url()
+    .test(
+      'isUnique',
+      'rss already exists!',
+      (value) =>
+        !watchedState.rss.feeds
+          .map((feed) => feed.url)
+          .includes(`${corsProxy}${value}`),
+    );
 
-  const validate = (fields) => {
+  const validate = (value) => {
     try {
-      schema.validateSync(fields, { abortEarly: false });
+      schema.validateSync(value, { abortEarly: false });
 
-      return {};
+      return '';
     } catch (e) {
-      return _.keyBy(e.inner, 'path');
+      return e.message;
     }
   };
 
   const updateValidationState = (state) => {
-    const errors = validate(state.form.fields);
+    const error = validate(state.form.input);
 
-    state.form.validity.valid = _.isEqual(errors, {});
-    state.form.validity.errors = errors;
+    state.form.validity.valid = _.isEqual(error, '');
+    state.form.validity.error = error;
   };
 
-  try {
-    const form = document.forms[0];
+  const rssReaderForm = document.querySelector('.rss-reader-form');
 
-    const { rss } = form.elements;
+  const rssReaderInput = rssReaderForm.querySelector('.rss-reader-form__input');
 
-    rss.addEventListener('input', (e) => {
-      watchedState.form.fields[rss.name] = e.target.value;
-      updateValidationState(watchedState);
-    });
+  rssReaderInput.addEventListener('input', (e) => {
+    watchedState.form.input = e.target.value;
+    updateValidationState(watchedState);
+  });
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
+  rssReaderForm.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-      const formData = new FormData(e.target);
+    const formData = new FormData(e.target);
 
-      const url = formData.get(rss.name);
+    const url = formData.get(rssReaderInput.name);
 
-      watchedState.form.process.state = 'sending';
+    watchedState.form.process.state = 'sending';
 
-      queries(`${corsProxy}${url}`, watchedState);
-    });
-  } catch (err) {
-    throw new Error(err.message);
-  }
+    query(`${corsProxy}${url}`, watchedState);
+  });
 };

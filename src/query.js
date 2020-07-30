@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import _ from 'lodash';
 
-const map = (data) => {
+const parse = (data) => {
   const domParser = new DOMParser();
 
   const parsedXML = domParser.parseFromString(data, 'application/xml');
@@ -61,7 +61,7 @@ export const subscribe = (state) => {
               (post) => post.feedId === feedId,
             );
 
-            const parsedFeed = data |> map;
+            const parsedFeed = data |> parse;
 
             const { posts } = _.pick(parsedFeed, ['posts']);
 
@@ -95,32 +95,27 @@ export default (url, state) => {
   axios
     .get(url)
     .then(({ data }) => {
-      try {
-        const feed = data |> map |> addId;
+      const feed = data |> parse |> addId;
 
-        if (feed) {
-          const {
-            title, description, id, posts,
-          } = feed;
+      if (feed) {
+        const {
+          title, description, id, posts,
+        } = feed;
 
-          state.rss = {
-            ...state.rss,
-            posts: [...posts, ...state.rss.posts],
-            feeds: [
-              {
-                id,
-                title,
-                description,
-                url,
-              },
-              ...state.rss.feeds,
-            ],
-          };
-          state.form.process.state = 'finished';
-        }
-      } catch (err) {
-        state.form.process.error = err;
-        state.form.process.state = 'failed';
+        state.rss = {
+          ...state.rss,
+          posts: [...posts, ...state.rss.posts],
+          feeds: [
+            {
+              id,
+              title,
+              description,
+              url,
+            },
+            ...state.rss.feeds,
+          ],
+        };
+        state.form.process.state = 'finished';
       }
     })
     .catch((err) => {

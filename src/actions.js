@@ -57,19 +57,11 @@ const formErrorsHandler = (form, error) => {
     errorElement.remove();
   }
 
-  let errorMessage = null;
-
-  if (error[rss.name]) {
-    errorMessage = error[rss.name].message;
-  } else {
-    errorMessage = error.message;
-  }
-
-  if (errorMessage) {
+  if (error) {
     const feedbackElement = document.createElement('div');
 
     feedbackElement.classList.add('invalid-feedback');
-    feedbackElement.innerHTML = errorMessage;
+    feedbackElement.innerHTML = error;
     rss.classList.remove('is-valid');
     rss.classList.add('is-invalid');
     rssContainer.classList.remove('is-valid');
@@ -145,7 +137,7 @@ export default (path, value) => {
         break;
 
       case 'form.process.error':
-      case 'form.validity.errors':
+      case 'form.validity.error':
         formErrorsHandler(element, value);
         break;
 
