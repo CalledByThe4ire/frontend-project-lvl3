@@ -36,20 +36,20 @@ export default () => {
     setTimeout(request, delay);
   }, delay);
 
-  const schema = yup
-    .string()
-    .required()
-    .url()
-    .test(
-      'isUnique',
-      'rss already exists!',
-      (value) =>
-        !watchedState.rss.feeds
-          .map((feed) => feed.url)
-          .includes(`${corsProxy}${value}`),
-    );
+  const buildSchema = (watchedState) =>
+    yup
+      .string()
+      .required()
+      .url()
+      .notOneOf(
+        watchedState.rss.feeds.map((feed) => {
+          const [, url] = feed.url.split(`${corsProxy}`);
 
-  const validate = (value) => {
+          return url;
+        }),
+      );
+
+  const validate = (value, schema = buildSchema(watchedState)) => {
     try {
       schema.validateSync(value, { abortEarly: false });
 
