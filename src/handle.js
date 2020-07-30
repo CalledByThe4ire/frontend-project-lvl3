@@ -88,15 +88,18 @@ const feedsHandler = (container, { feeds, posts }) => {
       const filteredPosts = posts.filter((post) => post.feedId === feedId);
 
       const mappedPosts = filteredPosts.length !== 0
-        && filteredPosts.map(({ title: postTitle, href: postHref }) => {
-          const postLink = document.createElement('a');
+        && filteredPosts
+          .map(({ items }) => items)
+          .flat()
+          .map(({ title: postTitle, href: postHref }) => {
+            const postLink = document.createElement('a');
 
-          postLink.className = 'list-group-item list-group-item-action posts__item';
-          postLink.href = postHref;
-          postLink.textContent = postTitle;
+            postLink.className = 'list-group-item list-group-item-action posts__item';
+            postLink.href = postHref;
+            postLink.textContent = postTitle;
 
-          return postLink;
-        });
+            return postLink;
+          });
 
       let postsContainer = null;
 

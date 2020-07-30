@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import * as yup from 'yup';
 import onChange from 'on-change';
-import actions from './actions';
+import handle from './handle';
 import query, { subscribe } from './query';
 import corsProxy from './utils/cors-proxy';
 import './i18n';
@@ -27,7 +27,7 @@ export default () => {
     },
   };
 
-  const watchedState = onChange(state, (path, value) => actions(path, value));
+  const watchedState = onChange(state, (path, value) => handle(path, value));
 
   const delay = 5000;
 

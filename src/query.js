@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, implicit-arrow-linebreak  */
+/* eslint-disable no-param-reassign, */
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import _ from 'lodash';
@@ -28,21 +28,12 @@ const parse = (data) => {
   });
 
   return {
+    id: uuidv4(),
     title,
     description,
     posts,
   };
 };
-
-const addId = (feed, id = uuidv4()) => ({
-  ...feed,
-  id,
-  posts: feed.posts.map((post) => {
-    post.feedId = id;
-
-    return post;
-  }),
-});
 
 export const subscribe = (state) => {
   const {
@@ -56,31 +47,27 @@ export const subscribe = (state) => {
       axios
         .get(feedUrl)
         .then(({ data }) => {
-          try {
-            const oldPosts = state.rss.posts.filter(
-              (post) => post.feedId === feedId,
-            );
+          const parsedFeed = data |> parse;
 
-            const parsedFeed = data |> parse;
+          const postsIndex = state.rss.posts.findIndex(
+            (post) => post.feedId === feedId,
+          );
 
-            const { posts } = _.pick(parsedFeed, ['posts']);
+          const oldPosts = state.rss.posts[postsIndex].items;
 
-            const newPosts = posts.map((post) => {
-              post.feedId = feedId;
+          const newPosts = parsedFeed.posts;
 
-              return post;
-            });
+          const postsDiff = _.differenceWith(newPosts, oldPosts, _.isEqual);
 
-            const postsDiff = _.differenceWith(newPosts, oldPosts, _.isEqual);
-
-            if (postsDiff.length !== 0) {
-              state.rss = {
-                ...state.rss,
-                posts: [...postsDiff, ...state.rss.posts],
-              };
-            }
-          } catch (err) {
-            console.error(err);
+          if (postsDiff.length !== 0) {
+            state.rss = {
+              ...state.rss,
+              posts: [
+                ...state.rss.posts.slice(0, postsIndex),
+                { feedId, items: [...postsDiff, ...oldPosts] },
+                ...state.rss.posts.slice(postsIndex + 1),
+              ],
+            };
           }
         })
         .catch((err) => {
@@ -95,16 +82,16 @@ export default (url, state) => {
   axios
     .get(url)
     .then(({ data }) => {
-      const feed = data |> parse |> addId;
+      const feed = data |> parse;
 
       if (feed) {
         const {
-          title, description, id, posts,
+          id, title, description, posts,
         } = feed;
 
         state.rss = {
           ...state.rss,
-          posts: [...posts, ...state.rss.posts],
+          posts: [{ feedId: id, items: posts }, ...state.rss.posts],
           feeds: [
             {
               id,
