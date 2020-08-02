@@ -18,8 +18,8 @@ module.exports = merge(common, {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       title: 'RSS Aggregator',
-      favicon: './misc/favicon.ico',
-      template: './markup/template.html',
+      favicon: './public/favicon.ico',
+      template: './public/template.html',
     }),
   ],
   module: {

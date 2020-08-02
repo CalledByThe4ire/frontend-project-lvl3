@@ -1,5 +1,5 @@
 // @ts-check
-import '../styles/main.scss';
+import '../public/main.scss';
 import init from './init';
 
 init();
