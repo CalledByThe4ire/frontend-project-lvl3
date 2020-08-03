@@ -6,12 +6,12 @@
   </head>
   <body class="page d-flex flex-column w-100 h-100">
     <main class="main-content rss-reader d-flex flex-column w-100 h-100">
-      <div class="jumbotron jumbotron-fluid rss-reader__jumbotron">
+      <div class="jumbotron jumbotron-fluid">
         <div class="container">
           <div class="row">
             <div class="col">
-              <h1 class="display-4 jumbotron__title"></h1>
-              <p class="lead jumbotron__lead"></p>
+              <h1 class="display-4 jumbotron__title rss-reader__title"></h1>
+              <p class="lead jumbotron__lead rss-reader__description"></p>
               <hr class="my-4" />
               <form
                 class="rss-reader__form rss-reader-form"
@@ -34,6 +34,7 @@
                   </div>
                 </div>
               </form>
+              <div class="rss-reader__error-message text-danger d-none mt-2"></div>
             </div>
           </div>
         </div>
@@ -41,7 +42,7 @@
       <div class="container">
         <div class="row">
           <div class="col">
-            <div class="rss-reader__feeds rss-reader-feeds"></div>
+            <div class="rss-reader__feeds rss-reader-feeds d-none"></div>
           </div>
         </div>
       </div>
