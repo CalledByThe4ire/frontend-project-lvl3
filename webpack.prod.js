@@ -23,6 +23,9 @@ module.exports = merge(common, {
     path: path.resolve(__dirname, 'dist'),
   },
   optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
     minimizer: [
       new OptimizeCssAssetsPlugin(),
       new TerserPlugin(),
