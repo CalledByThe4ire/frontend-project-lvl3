@@ -1,7 +1,7 @@
 export default {
   translation: {
     title: 'RSS Reader',
-    lead: 'Start reading RSS today! It is easy, it is nicely.',
+    description: 'Start reading RSS today! It is easy, it is nicely.',
     form: {
       input: {
         placeholder: 'Enter rss link',

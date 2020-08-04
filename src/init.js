@@ -1,4 +1,4 @@
-/* eslint-disable implicit-arrow-linebreak, no-unused-vars */
+/* eslint-disable implicit-arrow-linebreak */
 
 import _ from 'lodash';
 import axios from 'axios';
@@ -98,7 +98,7 @@ const fetchPosts = (state) => {
   if (feeds.length !== 0) {
     const { posts } = state;
 
-    const promises = feeds.map((feed) =>
+    feeds.forEach((feed) =>
       axios
         .get(`${corsProxyUrl}/${feed.url}`)
         .then(({ data }) => {
@@ -112,8 +112,6 @@ const fetchPosts = (state) => {
           const oldPosts = posts.filter((post) => post.feedId === feed.id);
 
           const postsDiff = _.differenceWith(newPosts, oldPosts, _.isEqual);
-
-          console.log(postsDiff);
 
           posts.unshift(...postsDiff);
         })
@@ -170,7 +168,7 @@ export default () => {
       );
 
       rssReaderTitle.textContent = t('title');
-      rssReaderDescription.textContent = t('lead');
+      rssReaderDescription.textContent = t('description');
       rssReaderFormInput.placeholder = t('form.input.placeholder');
       rssReaderFormSubmit.textContent = t('form.submit.label');
 
