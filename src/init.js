@@ -14,6 +14,7 @@ const errorsMapping = {
   url: 'form.input.errors.url',
   exists: 'form.input.errors.exists',
   required: 'form.input.errors.required',
+  none: null,
 };
 
 const validateRssUrl = (url, feeds) => {
@@ -34,32 +35,22 @@ const validateRssUrl = (url, feeds) => {
   }
 };
 
-const handleRssInput = ({ target: { value } }, state) => {
-  const { form, feeds } = state;
-
-  form.url = value;
-
-  const rssUrlError = validateRssUrl(value, feeds);
-
-  if (rssUrlError) {
-    form.valid = false;
-    form.error = rssUrlError;
-  } else {
-    form.valid = true;
-    form.error = null;
-  }
-};
-
 const handleFormSubmit = (event, state) => {
   event.preventDefault();
 
   const { form, feeds, posts } = state;
 
+  const formData = new FormData(event.target);
+
+  form.url = formData.get('rss');
+
   form.state = 'loading';
 
   const rssUrlError = validateRssUrl(form.url, feeds);
 
-  if (!rssUrlError) {
+  if (rssUrlError === errorsMapping.none) {
+    form.valid = true;
+
     axios
       .get(`${corsProxyUrl}/${form.url}`)
       .then(({ data }) => {
@@ -83,10 +74,12 @@ const handleFormSubmit = (event, state) => {
         form.state = 'filling';
       })
       .catch((error) => {
+        form.valid = false;
         form.state = 'failed';
         form.error = error.message;
       });
   } else {
+    form.valid = false;
     form.state = 'failed';
     form.error = rssUrlError;
   }
@@ -128,7 +121,7 @@ export default () => {
       state: 'filling',
       url: '',
       valid: true,
-      error: null,
+      error: errorsMapping.none,
     },
     feeds: [],
     posts: [],
@@ -173,10 +166,6 @@ export default () => {
       rssReaderFormSubmit.textContent = t('form.submit.label');
 
       const watchedState = watch(state, elements);
-
-      elements.rss.addEventListener('input', (event) => {
-        handleRssInput(event, watchedState);
-      });
 
       elements.form.addEventListener('submit', (event) => {
         handleFormSubmit(event, watchedState);
