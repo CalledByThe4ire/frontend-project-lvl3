@@ -8,7 +8,8 @@ import i18next from 'i18next';
 import { en } from './locales';
 import parse from './parser';
 import watch from './watcher';
-import corsProxyUrl from './utils/cors-proxy-url';
+
+const corsProxyUrl = 'https://cors-anywhere.herokuapp.com';
 
 const errorsMapping = {
   url: 'form.input.errors.url',
