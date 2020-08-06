@@ -59,12 +59,12 @@ const handleFormSubmit = (event, state) => {
 
         const feedId = uuidv4();
 
-        posts.push(
-          ...feed.posts.map((post) => ({
-            ...post,
-            feedId,
-          })),
-        );
+        const mappedPosts = feed.posts.map((post) => ({
+          ...post,
+          feedId,
+        }));
+
+        posts.push(...mappedPosts);
         feeds.unshift({
           id: feedId,
           title: feed.title,
