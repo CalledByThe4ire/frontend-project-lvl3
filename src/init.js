@@ -93,26 +93,20 @@ const fetchPosts = (state) => {
     const { posts } = state;
 
     feeds.forEach((feed) =>
-      axios
-        .get(`${corsProxyUrl}/${feed.url}`)
-        .then(({ data }) => {
-          const parsedFeed = data |> parse;
+      axios.get(`${corsProxyUrl}/${feed.url}`).then(({ data }) => {
+        const parsedFeed = data |> parse;
 
-          const newPosts = parsedFeed.posts.map((post) => ({
-            ...post,
-            feedId: feed.id,
-          }));
-
-          const oldPosts = posts.filter((post) => post.feedId === feed.id);
-
-          const postsDiff = _.differenceWith(newPosts, oldPosts, _.isEqual);
-
-          posts.unshift(...postsDiff);
-        })
-        .catch((err) => {
-          console.error(err);
-          throw err;
+        const newPosts = parsedFeed.posts.map((post) => ({
+          ...post,
+          feedId: feed.id,
         }));
+
+        const oldPosts = posts.filter((post) => post.feedId === feed.id);
+
+        const postsDiff = _.differenceWith(newPosts, oldPosts, _.isEqual);
+
+        posts.unshift(...postsDiff);
+      }));
   }
 };
 
