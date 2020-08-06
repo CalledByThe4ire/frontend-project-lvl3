@@ -10,16 +10,24 @@
         <div class="container">
           <div class="row">
             <div class="col">
-              <h1 class="display-4 jumbotron__title rss-reader__title"></h1>
-              <p class="lead jumbotron__lead rss-reader__description"></p>
+              <h1
+                id="rss-reader-title"
+                class="display-4 jumbotron__title rss-reader__title"
+              ></h1>
+              <p
+                id="rss-reader-description"
+                class="lead jumbotron__lead rss-reader__description"
+              ></p>
               <hr class="my-4" />
               <form
+                id="rss-reader-form"
                 class="rss-reader__form rss-reader-form"
                 name="rss-reader-form"
               >
                 <div class="form-group mb-0">
                   <div class="input-group">
                     <input
+                      id="rss-reader-form-input"
                       class="form-control rss-reader-form__input"
                       type="text"
                       name="rss"
@@ -27,6 +35,7 @@
                     />
                     <div class="input-group-append">
                       <button
+                        id="rss-reader-form-submit"
                         class="btn btn-outline-secondary rss-reader-form__submit"
                         type="submit"
                       ></button>
@@ -34,7 +43,10 @@
                   </div>
                 </div>
               </form>
-              <div class="rss-reader__error-message text-danger d-none mt-2"></div>
+              <div
+                id="rss-reader-error-message"
+                class="rss-reader__error-message text-danger d-none mt-2"
+              ></div>
             </div>
           </div>
         </div>
@@ -42,7 +54,10 @@
       <div class="container">
         <div class="row">
           <div class="col">
-            <div class="rss-reader__feeds rss-reader-feeds d-none"></div>
+            <div
+              id="rss-reader-feeds"
+              class="rss-reader__feeds rss-reader-feeds d-none"
+            ></div>
           </div>
         </div>
       </div>

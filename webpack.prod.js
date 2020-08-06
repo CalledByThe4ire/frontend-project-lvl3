@@ -32,8 +32,8 @@ module.exports = merge(common, {
       new HtmlWebpackPlugin({
         filename: 'index.html',
         title: 'RSS Aggregator',
-        favicon: './public/favicon.ico',
-        template: './public/template.html',
+        favicon: './favicon.ico',
+        template: './template.html',
         minify: {
           removeAttributeQuotes: true,
           collapseWhitespace: true,

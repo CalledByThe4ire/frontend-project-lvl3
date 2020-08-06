@@ -128,13 +128,13 @@ export default () => {
   };
 
   const elements = {
-    title: document.querySelector('.rss-reader__title'),
-    description: document.querySelector('.rss-reader__description'),
-    form: document.querySelector('.rss-reader__form'),
-    rss: document.querySelector('.rss-reader-form__input[name="rss"]'),
-    submit: document.querySelector('.rss-reader-form__submit'),
-    errorMessage: document.querySelector('.rss-reader__error-message'),
-    feeds: document.querySelector('.rss-reader__feeds'),
+    title: document.querySelector('#rss-reader-title'),
+    description: document.querySelector('#rss-reader-description'),
+    form: document.querySelector('#rss-reader-form'),
+    rss: document.querySelector('#rss-reader-form-input'),
+    submit: document.querySelector('#rss-reader-form-submit'),
+    errorMessage: document.querySelector('#rss-reader-error-message'),
+    feeds: document.querySelector('#rss-reader-feeds'),
   };
 
   i18next
