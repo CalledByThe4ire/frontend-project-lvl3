@@ -11,6 +11,8 @@ import watch from './watcher';
 
 const corsProxyUrl = 'https://cors-anywhere.herokuapp.com';
 
+const delay = 5000;
+
 const errorsMapping = {
   url: 'form.input.errors.url',
   exists: 'form.input.errors.exists',
@@ -92,7 +94,7 @@ const fetchPosts = (state) => {
   if (feeds.length !== 0) {
     const { posts } = state;
 
-    feeds.forEach((feed) =>
+    const promises = feeds.map((feed) =>
       axios.get(`${corsProxyUrl}/${feed.url}`).then(({ data }) => {
         const parsedFeed = data |> parse;
 
@@ -107,6 +109,12 @@ const fetchPosts = (state) => {
 
         posts.unshift(...postsDiff);
       }));
+
+    Promise.all(promises).finally(() => {
+      setTimeout(() => {
+        fetchPosts(state);
+      }, delay);
+    });
   }
 };
 
@@ -166,13 +174,8 @@ export default () => {
         handleFormSubmit(event, watchedState);
       });
 
-      const delay = 5000;
-
-      const request = () => {
+      setTimeout(() => {
         fetchPosts(watchedState);
-        setTimeout(request, delay);
-      };
-
-      setTimeout(request, delay);
+      }, delay);
     });
 };
