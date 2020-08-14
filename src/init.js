@@ -38,7 +38,7 @@ const validateRssUrl = (url, feeds) => {
   }
 };
 
-const handleFormSubmit = (event, state) => {
+const handleFormSubmit = async (event, state) => {
   event.preventDefault();
 
   const { form, feeds, posts } = state;
@@ -54,33 +54,32 @@ const handleFormSubmit = (event, state) => {
   if (rssUrlError === errorsMapping.none) {
     form.valid = true;
 
-    axios
-      .get(`${corsProxyUrl}/${form.url}`)
-      .then(({ data }) => {
-        const feed = data |> parse;
+    try {
+      const { data } = await axios.get(`${corsProxyUrl}/${form.url}`);
 
-        const feedId = uuidv4();
+      const feed = data |> parse;
 
-        const mappedPosts = feed.posts.map((post) => ({
-          ...post,
-          feedId,
-        }));
+      const feedId = uuidv4();
 
-        posts.push(...mappedPosts);
-        feeds.unshift({
-          id: feedId,
-          title: feed.title,
-          description: feed.description,
-          url: form.url,
-        });
-        form.rss = '';
-        form.state = 'filling';
-      })
-      .catch((error) => {
-        form.valid = false;
-        form.state = 'failed';
-        form.error = error.message;
+      const mappedPosts = feed.posts.map((post) => ({
+        ...post,
+        feedId,
+      }));
+
+      posts.push(...mappedPosts);
+      feeds.unshift({
+        id: feedId,
+        title: feed.title,
+        description: feed.description,
+        url: form.url,
       });
+      form.rss = '';
+      form.state = 'filling';
+    } catch (error) {
+      form.valid = false;
+      form.state = 'failed';
+      form.error = error.message;
+    }
   } else {
     form.valid = false;
     form.state = 'failed';
@@ -94,21 +93,22 @@ const fetchPosts = (state) => {
   if (feeds.length !== 0) {
     const { posts } = state;
 
-    const promises = feeds.map((feed) =>
-      axios.get(`${corsProxyUrl}/${feed.url}`).then(({ data }) => {
-        const parsedFeed = data |> parse;
+    const promises = feeds.map(async (feed) => {
+      const { data } = await axios.get(`${corsProxyUrl}/${feed.url}`);
 
-        const newPosts = parsedFeed.posts.map((post) => ({
-          ...post,
-          feedId: feed.id,
-        }));
+      const parsedFeed = data |> parse;
 
-        const oldPosts = posts.filter((post) => post.feedId === feed.id);
-
-        const postsDiff = _.differenceWith(newPosts, oldPosts, _.isEqual);
-
-        posts.unshift(...postsDiff);
+      const newPosts = parsedFeed.posts.map((post) => ({
+        ...post,
+        feedId: feed.id,
       }));
+
+      const oldPosts = posts.filter((post) => post.feedId === feed.id);
+
+      const postsDiff = _.differenceWith(newPosts, oldPosts, _.isEqual);
+
+      posts.unshift(...postsDiff);
+    });
 
     Promise.all(promises).finally(() => {
       setTimeout(() => {
@@ -118,7 +118,7 @@ const fetchPosts = (state) => {
   }
 };
 
-export default () => {
+export default async () => {
   const state = {
     form: {
       state: 'filling',
@@ -140,42 +140,40 @@ export default () => {
     feeds: document.querySelector('#rss-reader-feeds'),
   };
 
-  i18next
-    .init({
-      lng: 'en',
-      debug: true,
-      resources: {
-        en,
-      },
-    })
-    .then((t) => {
-      const rssReaderTitle = document.querySelector('.rss-reader__title');
+  const t = await i18next.init({
+    lng: 'en',
+    debug: true,
+    resources: {
+      en,
+    },
+  });
 
-      const rssReaderDescription = document.querySelector(
-        '.rss-reader__description',
-      );
+  const rssReaderTitle = document.querySelector('.rss-reader__title');
 
-      const rssReaderFormInput = document.querySelector(
-        '.rss-reader-form__input[name="rss"]',
-      );
+  const rssReaderDescription = document.querySelector(
+    '.rss-reader__description',
+  );
 
-      const rssReaderFormSubmit = document.querySelector(
-        '.rss-reader-form__submit',
-      );
+  const rssReaderFormInput = document.querySelector(
+    '.rss-reader-form__input[name="rss"]',
+  );
 
-      rssReaderTitle.textContent = t('title');
-      rssReaderDescription.textContent = t('description');
-      rssReaderFormInput.placeholder = t('form.input.placeholder');
-      rssReaderFormSubmit.textContent = t('form.submit.label');
+  const rssReaderFormSubmit = document.querySelector(
+    '.rss-reader-form__submit',
+  );
 
-      const watchedState = watch(state, elements);
+  rssReaderTitle.textContent = t('title');
+  rssReaderDescription.textContent = t('description');
+  rssReaderFormInput.placeholder = t('form.input.placeholder');
+  rssReaderFormSubmit.textContent = t('form.submit.label');
 
-      elements.form.addEventListener('submit', (event) => {
-        handleFormSubmit(event, watchedState);
-      });
+  const watchedState = watch(state, elements);
 
-      setTimeout(() => {
-        fetchPosts(watchedState);
-      }, delay);
-    });
+  elements.form.addEventListener('submit', (event) => {
+    handleFormSubmit(event, watchedState);
+  });
+
+  setTimeout(() => {
+    fetchPosts(watchedState);
+  }, delay);
 };
